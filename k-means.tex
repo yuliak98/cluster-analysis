@@ -1,0 +1,174 @@
+\documentclass[12pt, a4paper]{article}
+\usepackage{tikz}
+\usepackage{cmap} 
+\usepackage[T2A]{fontenc} 
+\usepackage[utf8]{inputenc} 
+\usepackage[english,russian]{babel}
+\usepackage{amsmath}
+
+\title{Алгоритмы кластеризации}
+\date{}
+\begin{document}
+\maketitle
+
+\section*{K-means}
+Алгоритм разбивает множество элементов на известное число кластеров. Основной идеей алгоритма является минимизировать среднее расстояние между каждым из объектов в кластере и его центроидом. 
+\\Определим центроид \( \mu(\omega) \) кластера \(\omega \in \varOmega \) как: 
+\[
+        \mu(\omega) = \frac{1}{|\omega|} \sum_{s \in \omega} s
+\]
+где \( \varOmega \) = \{ \( \omega_1, \omega_2, \ldots, \omega_k \) \} -- множество кластеров и \( S = \{ s_1, s_2, \ldots , s_n \} \) -- множество объектов. 
+\begin{enumerate}
+\item На первом шаге фиксируются начальное приближение для центроидов кластеров, а объекты разбиваются на кластеры при условии минимизации внутрекластерного расстояния. Т.е. на этом шаге создаем кластеры, при условии существования центроида. Внутрикластерное расстояние можно определить по формуле:
+\[
+             d = \frac{1}{N} \sum_{k=1}^K \sum_{s \in \omega_k} \|s - \mu(\omega_k)\|^2
+\]
+
+\item Далее фиксируется распределение по кластерам и пересчитываются значения центроидов. 
+Алгоритм продолжается до тех пор, пока не будет выполняться какой-то критерий остановки.
+\end{enumerate}
+
+Примеры критериев остановки: 
+
+
+\begin{itemize} 
+\item Кластеры не изменились после предыдущей итерации.
+
+ 
+\item Фиксированное число итераций.
+
+
+\item Центроиды не изменились после предыдущей итерации.
+\end{itemize}
+
+Начальное приближение можно выбрать разными способами:
+
+
+\begin{itemize} 
+\item Использовать результат другого алгоритма кластеризации.
+
+
+\item Исключение выбросов из множества при выборе начального положения. 
+
+
+\item Запустить алгоритм из различных начальных приближений и выбрать наилучший.
+\end{itemize}
+
+\section*{Пошаговая иллюстрация}
+\begin{tikzpicture}
+    \begin{scope}
+        \draw (-3.5, 3.5 ) -- (3.5, 3.5);
+        \draw (-3.5, -3.5) -- (3.5, -3.5);
+        \draw (-3.5, -3.5) -- (-3.5, 3.5);
+        \draw (3.5, 3.5) -- (3.5, -3.5);
+
+        \draw[red, fill=red] (-1.5, -2.5) circle (0.2);
+        \draw[red, fill=red] (-1.75, -0.5) circle (0.2);
+        \draw[red, fill=red] (-1.5, 1.4) circle (0.2);
+        \draw[red, fill=red] (-2, 0.75) circle (0.2);
+        \draw[red, fill=red] (-2.625, 1.8) circle (0.2);
+        \draw[yellow, fill=yellow] (1.75, -3.2) circle (0.2);
+        \draw[yellow, fill=yellow] (3, -2.8) circle (0.2);
+        \draw[yellow, fill=yellow] (3, -0.5) circle (0.2);
+        \draw[yellow, fill=yellow] (1.75, -0.5) circle (0.2);
+        \draw[yellow, fill=yellow] (2.7, 1.2) circle (0.2);
+        \draw[yellow, fill=yellow] (2.5, 1.8) circle (0.2);
+        \draw[yellow, fill=yellow] (0.5, 1) circle (0.2);
+        \draw[yellow, fill=yellow] (-0.4, 2.3) circle (0.2);
+        \draw[yellow, fill=yellow] (-0.9, 2.9) circle (0.2); 
+        \draw[red, fill=red] (-3, 1) -- (-2.75, 1.5) -- (-2.5, 1) -- cycle;
+        \draw[blue, fill=red] (-2.5, -0.5) -- (-2.25, 0) -- (-2, -0.5) -- cycle;
+        \draw[yellow, fill=yellow] (0.25, 3) -- (.5, 3.5) -- (0.75, 3) -- cycle;
+        \draw[blue, fill=yellow] (1, 0.2) -- (1.25, 0.7) -- (1.5, 0.2) -- cycle;
+        \draw[blue] (1.5, -3.4) -- (-1.5, 3.4);
+        \draw[->][blue] (-2.75, 0.9) -- (-2.5, -0.1);
+        \draw[->][blue] (0.5, 2.9) -- (1, 0.6);
+        
+    \end{scope}
+    \begin{scope}[xshift=7.5cm]
+        \draw (-3.5, 3.5 ) -- (3.5, 3.5);
+        \draw (-3.5, -3.5) -- (3.5, -3.5);
+        \draw (-3.5, -3.5) -- (-3.5, 3.5);
+        \draw (3.5, 3.5) -- (3.5, -3.5);
+    
+        \draw[red, fill=red] (-1.5, -2.5) circle (0.2);
+        \draw[red, fill=red] (-1.75, -0.5) circle (0.2);
+        \draw[red, fill=red] (-1.5, 1.4) circle (0.2);
+        \draw[red, fill=red] (-2, 0.75) circle (0.2);
+        \draw[red, fill=red] (-2.625, 1.8) circle (0.2);
+        \draw[yellow, fill=yellow] (1.75, -3.2) circle (0.2);
+        \draw[yellow, fill=yellow] (3, -2.8) circle (0.2);
+        \draw[yellow, fill=yellow] (3, -0.5) circle (0.2);
+        \draw[yellow, fill=yellow] (1.75, -0.5) circle (0.2);
+        \draw[yellow, fill=yellow] (2.7, 1.2) circle (0.2);
+        \draw[yellow, fill=yellow] (2.5, 1.8) circle (0.2);
+        \draw[yellow, fill=yellow] (0.5, 1) circle (0.2);
+        \draw[red, fill=red] (-0.4, 2.3) circle (0.2);
+        \draw[red, fill=red] (-0.9, 2.9) circle (0.2); 
+        \draw[blue, fill=red] (-2, 1) -- (-1.75, 1.5) -- (-1.5, 1) -- cycle;
+        \draw[red, fill=red] (-2.5, -0.5) -- (-2.25, 0) -- (-2, -0.5) -- cycle;
+        \draw[blue, fill=yellow] (1.75, -1) -- (2, -0.5) -- (2.25, -1) -- cycle;
+        \draw[yellow, fill=yellow] (1, 0.2) -- (1.25, 0.7) -- (1.5, 0.2) -- cycle;
+        \draw[blue] (0.5, 3.4) -- (-1.5, -3.4);
+        \draw[->][blue] (-2.1, -0.1) -- (-1.7, 0.9);
+        \draw[->][blue] (1.25, 0.1) -- (1.8, -0.6);
+    \end{scope}
+    \begin{scope}[yshift=-7.5cm]
+        \draw (-3.5, 3.5 ) -- (3.5, 3.5);
+        \draw (-3.5, -3.5) -- (3.5, -3.5);
+        \draw (-3.5, -3.5) -- (-3.5, 3.5);
+        \draw (3.5, 3.5) -- (3.5, -3.5);
+    
+        \draw[yellow, fill=yellow] (-1.5, -2.5) circle (0.2);
+        \draw[red, fill=red] (-1.75, -0.5) circle (0.2);
+        \draw[red, fill=red] (-1.5, 1.4) circle (0.2);
+        \draw[red, fill=red] (-2, 0.75) circle (0.2);
+        \draw[red, fill=red] (-2.625, 1.8) circle (0.2);
+        \draw[yellow, fill=yellow] (1.75, -3.2) circle (0.2);
+        \draw[yellow, fill=yellow] (3, -2.8) circle (0.2);
+        \draw[yellow, fill=yellow] (3, -0.5) circle (0.2);
+        \draw[yellow, fill=yellow] (1.75, -0.5) circle (0.2);
+        \draw[yellow, fill=yellow] (2.7, 1.2) circle (0.2);
+        \draw[yellow, fill=yellow] (2.5, 1.8) circle (0.2);
+        \draw[red, fill=red] (0.5, 1) circle (0.2);
+        \draw[red, fill=red] (-0.4, 2.3) circle (0.2);
+        \draw[red, fill=red] (-0.9, 2.9) circle (0.2); 
+        \draw[red, fill=red] (-1, 1.5) -- (-0.75, 2) -- (-0.5, 1.5) -- cycle;
+        \draw[yellow, fill=yellow] (1.5, -1.5) -- (1.75, -1) -- (2, -1.5) -- cycle;
+        \draw[blue] (3, 3.4) -- (-2.8, -3.4);
+        
+
+    \end{scope}
+    \begin{scope}[yshift=-7.5cm, xshift=7.5cm]
+        \draw (-3.5, 3.5 ) -- (3.5, 3.5);
+        \draw (-3.5, -3.5) -- (3.5, -3.5);
+        \draw (-3.5, -3.5) -- (-3.5, 3.5);
+        \draw (3.5, 3.5) -- (3.5, -3.5);
+    
+        \draw[yellow, fill=yellow] (-1.5, -2.5) circle (0.2);
+        \draw[red, fill=red] (-1.75, -0.5) circle (0.2);
+        \draw[red, fill=red] (-1.5, 1.4) circle (0.2);
+        \draw[red, fill=red] (-2, 0.75) circle (0.2);
+        \draw[red, fill=red] (-2.625, 1.8) circle (0.2);
+        \draw[yellow, fill=yellow] (1.75, -3.2) circle (0.2);
+        \draw[yellow, fill=yellow] (3, -2.8) circle (0.2);
+        \draw[yellow, fill=yellow] (3, -0.5) circle (0.2);
+        \draw[yellow, fill=yellow] (1.75, -0.5) circle (0.2);
+        \draw[yellow, fill=yellow] (2.7, 1.2) circle (0.2);
+        \draw[yellow, fill=yellow] (2.5, 1.8) circle (0.2);
+        \draw[red, fill=red] (0.5, 1) circle (0.2);
+        \draw[red, fill=red] (-0.4, 2.3) circle (0.2);
+        \draw[red, fill=red] (-0.9, 2.9) circle (0.2); 
+        \draw[red, fill=red] (-2, 1) -- (-1.75, 1.5) -- (-1.5, 1) -- cycle;
+        \draw[blue, fill=red] (-1, 1.5) -- (-0.75, 2) -- (-0.5, 1.5) -- cycle;
+        \draw[yellow, fill=yellow] (1.75, -1) -- (2, -0.5) -- (2.25, -1) -- cycle;
+        \draw[blue, fill=yellow] (1.5, -1.5) -- (1.75, -1) -- (2, -1.5) -- cycle;
+        \draw[blue] (3, 3.4) -- (-2.5, -3.4);
+        \draw[->][blue] (-1.4, 1.15) -- (-0.8, 1.4);
+        \draw[->][blue] (2, -1.05) -- (1.9, -1.25);
+        
+    \end{scope}
+
+\end{tikzpicture}
+
+\end{document}
